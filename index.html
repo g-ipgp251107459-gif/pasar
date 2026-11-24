@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Permainan Kata Adjektif</title>
+<style>
+*{box-sizing:border-box}body{margin:0;padding:15px;font-family:Arial,sans-serif;background:linear-gradient(135deg,#d9f3ff,#f4e4ff);color:#26334a}.container{max-width:750px;margin:20px auto}.card{background:white;border-radius:24px;padding:25px;text-align:center;box-shadow:0 8px 25px #64748b25}h1{color:#7654c8}.top{display:flex;gap:10px;justify-content:space-between;margin:20px 0;flex-wrap:wrap}.info{background:#f0eaff;padding:12px;border-radius:12px;flex:1;font-weight:bold}.progress{height:12px;background:#e5e7eb;border-radius:20px;overflow:hidden}.bar{height:100%;background:#8b68e8;width:0;transition:.3s}.picture{background:#f4f7ff;border:3px dashed #b8a5ee;border-radius:20px;min-height:220px;margin:20px 0;display:flex;align-items:center;justify-content:center;flex-direction:column}.emoji{font-size:100px}.question{font-size:20px;font-weight:bold;margin:18px 0}.answers{display:grid;grid-template-columns:1fr 1fr;gap:12px}.answer{border:2px solid #d8d1f5;background:white;border-radius:14px;padding:17px 8px;font-size:17px;font-weight:bold;cursor:pointer;color:#51418a}.answer:hover:not(:disabled){background:#eee8ff}.answer:disabled{cursor:default}.correct{background:#d9fbe6!important;border-color:#22a35a!important;color:#126a39}.wrong{background:#ffe0e0!important;border-color:#e45858!important;color:#a32929}.feedback{display:none;margin:18px 0;padding:15px;border-radius:12px;font-weight:bold}.good{background:#dcfce7;color:#166534}.bad{background:#fee2e2;color:#991b1b}button.main{border:0;background:#7955d5;color:white;padding:14px 24px;border-radius:13px;font-size:16px;font-weight:bold;cursor:pointer;margin:8px 4px}button.main:hover{background:#6040b5}.sound{background:#e9e2ff;color:#6040b5;border:0;border-radius:30px;padding:10px 15px;font-weight:bold;cursor:pointer}#game,#result{display:none}.result-icon{font-size:85px}.small{font-size:14px;color:#64748b}@media(max-width:480px){.card{padding:17px}.emoji{font-size:80px}.answer{font-size:15px;padding:14px 5px}h1{font-size:23px}}
+</style>
+</head>
+<body>
+<div class="container">
+<div class="card" id="start"><div style="font-size:65px">🧩📚</div><h1>TEKA GAMBAR, KENAL KATA ADJEKTIF!</h1><p>Permainan Bahasa Melayu Tahun 4</p><p>Lihat gambar dan pilih kata adjektif yang paling sesuai!</p><p>🎯 16 soalan | ⭐ 1 markah setiap soalan</p><button class="main" onclick="startGame()">🚀 MULA BERMAIN</button></div>
+<div class="card" id="game"><button class="sound" id="soundBtn" onclick="toggleSound()">🔊 Bunyi: ON</button><h1>🧠 MARI TEKA!</h1><div class="top"><div class="info">Soalan: <span id="number">1</span>/16</div><div class="info">⭐ Markah: <span id="score">0</span></div></div><div class="progress"><div class="bar" id="bar"></div></div><div class="picture"><div class="emoji" id="picture">🏃💨</div><div class="small">Perhatikan gambar di atas!</div></div><div class="question">Apakah kata adjektif yang sesuai?</div><div class="answers" id="answers"></div><div class="feedback" id="feedback"></div><button class="main" id="next" onclick="nextQuestion()" style="display:none">Soalan Seterusnya ➜</button><button class="main" onclick="restartGame()">🔄 MULA SEMULA</button></div>
+<div class="card" id="result"><div class="result-icon">🏆</div><h1>TAHNIAH!</h1><h2>Permainan Selesai!</h2><p>Markah anda:</p><div style="font-size:55px;font-weight:bold;color:#7955d5"><span id="finalScore">0</span>/16</div><h3 id="message"></h3><p id="comment"></p><button class="main" onclick="restartGame()">🔄 MAIN SEMULA</button></div>
+</div>
+<script>
+const questions=[
+{img:"🏃💨",word:"Pantas",opts:["Pantas","Sedih","Awal","Manis"],type:"Cara",explain:"Pantas menerangkan cara seseorang bergerak."},
+{img:"🐢",word:"Perlahan",opts:["Harum","Perlahan","Gembira","Lewat"],type:"Cara",explain:"Perlahan menerangkan cara kura-kura bergerak."},
+{img:"🌊💦",word:"Deras",opts:["Masam","Takut","Deras","Lama"],type:"Cara",explain:"Deras menerangkan cara air mengalir."},
+{img:"🚶",word:"Laju",opts:["Merdu","Laju","Sedih","Awal"],type:"Cara",explain:"Laju menerangkan cara seseorang bergerak."},
+{img:"🌅⏰",word:"Awal",opts:["Awal","Masam","Pantas","Marah"],type:"Waktu",explain:"Awal menunjukkan sesuatu berlaku lebih awal."},
+{img:"🌙😴",word:"Lewat",opts:["Harum","Gembira","Lewat","Deras"],type:"Waktu",explain:"Lewat menunjukkan sesuatu berlaku selepas waktu yang sepatutnya."},
+{img:"🕰️",word:"Lama",opts:["Takut","Lama","Manis","Perlahan"],type:"Waktu",explain:"Lama menerangkan tempoh masa yang panjang."},
+{img:"⚡⏱️",word:"Segera",opts:["Sedih","Segera","Masam","Deras"],type:"Waktu",explain:"Segera bermaksud dilakukan tanpa berlengah."},
+{img:"😄🎉",word:"Gembira",opts:["Gembira","Lewat","Pahit","Pantas"],type:"Perasaan",explain:"Gembira menunjukkan perasaan bahagia."},
+{img:"😢",word:"Sedih",opts:["Harum","Deras","Sedih","Awal"],type:"Perasaan",explain:"Sedih menunjukkan perasaan dukacita."},
+{img:"😨",word:"Takut",opts:["Manis","Takut","Laju","Lama"],type:"Perasaan",explain:"Takut menunjukkan perasaan gerun."},
+{img:"😡",word:"Marah",opts:["Marah","Merdu","Segera","Masam"],type:"Perasaan",explain:"Marah menunjukkan perasaan tidak puas hati."},
+{img:"🍋",word:"Masam",opts:["Pantas","Masam","Sedih","Awal"],type:"Pancaindera",explain:"Masam menerangkan rasa lemon."},
+{img:"🍯",word:"Manis",opts:["Lewat","Takut","Manis","Deras"],type:"Pancaindera",explain:"Manis menerangkan rasa madu."},
+{img:"🌹🌸",word:"Harum",opts:["Harum","Perlahan","Marah","Lama"],type:"Pancaindera",explain:"Harum menerangkan bau bunga yang menyenangkan."},
+{img:"🎵🎶",word:"Merdu",opts:["Segera","Sedih","Merdu","Laju"],type:"Pancaindera",explain:"Merdu menerangkan bunyi yang sedap didengar."}
+];
+let current=0,score=0,locked=false,soundOn=true,audio;
+function playSound(type){if(!soundOn)return;try{audio=audio||new(window.AudioContext||window.webkitAudioContext)();if(audio.state==="suspended")audio.resume();const notes={correct:[523,659,784],wrong:[220,165],win:[523,659,784,1047],click:[440]}[type];notes.forEach((freq,i)=>{const osc=audio.createOscillator(),gain=audio.createGain();osc.type="sine";osc.frequency.value=freq;gain.gain.setValueAtTime(.13,audio.currentTime+i*.14);gain.gain.exponentialRampToValueAtTime(.001,audio.currentTime+i*.14+.22);osc.connect(gain);gain.connect(audio.destination);osc.start(audio.currentTime+i*.14);osc.stop(audio.currentTime+i*.14+.23);});}catch(e){}}
+function toggleSound(){soundOn=!soundOn;document.getElementById("soundBtn").textContent=soundOn?"🔊 Bunyi: ON":"🔇 Bunyi: OFF";if(soundOn)playSound("click")}
+function startGame(){playSound("click");document.getElementById("start").style.display="none";document.getElementById("result").style.display="none";document.getElementById("game").style.display="block";current=0;score=0;loadQuestion()}
+function loadQuestion(){locked=false;let q=questions[current];document.getElementById("number").textContent=current+1;document.getElementById("score").textContent=score;document.getElementById("bar").style.width=(current/16*100)+"%";document.getElementById("picture").textContent=q.img;document.getElementById("feedback").style.display="none";document.getElementById("next").style.display="none";let area=document.getElementById("answers");area.innerHTML="";q.opts.forEach(option=>{let btn=document.createElement("button");btn.className="answer";btn.textContent=option;btn.onclick=()=>checkAnswer(btn,option);area.appendChild(btn)})}
+function checkAnswer(btn,answer){if(locked)return;locked=true;let q=questions[current],feedback=document.getElementById("feedback");document.querySelectorAll(".answer").forEach(b=>{b.disabled=true;if(b.textContent===q.word)b.classList.add("correct")});if(answer===q.word){score++;playSound("correct");feedback.className="feedback good";feedback.innerHTML="✅ BETUL!<br>"+q.explain}else{playSound("wrong");btn.classList.add("wrong");feedback.className="feedback bad";feedback.innerHTML="❌ Belum tepat! Jawapan betul ialah <b>"+q.word+"</b>.<br>"+q.explain}feedback.innerHTML+="<br><br>📚 Kata Adjektif "+q.type;feedback.style.display="block";document.getElementById("score").textContent=score;document.getElementById("next").style.display="inline-block";document.getElementById("next").textContent=current===15?"Lihat Keputusan 🏆":"Soalan Seterusnya ➜"}
+function nextQuestion(){playSound("click");if(current<15){current++;loadQuestion()}else{showResult()}}
+function showResult(){document.getElementById("game").style.display="none";document.getElementById("result").style.display="block";document.getElementById("finalScore").textContent=score;let msg,comment;if(score>=14){msg="🌟 Cemerlang!";comment="Anda sangat mahir mengenal kata adjektif!"}else if(score>=10){msg="👏 Bagus!";comment="Teruskan usaha untuk menjadi lebih baik!"}else if(score>=6){msg="💪 Teruskan Usaha!";comment="Cuba lagi untuk meningkatkan markah!"}else{msg="📚 Jangan Putus Asa!";comment="Ulang kaji dan cuba sekali lagi!"}document.getElementById("message").textContent=msg;document.getElementById("comment").textContent=comment;playSound("win")}
+function restartGame(){playSound("click");current=0;score=0;document.getElementById("result").style.display="none";document.getElementById("start").style.display="none";document.getElementById("game").style.display="block";loadQuestion()}
+</script>
+</body>
+</html>
